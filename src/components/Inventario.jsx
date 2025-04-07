@@ -9,9 +9,11 @@ const Inventario = () => {
   const [precio, setPrecio] = useState("");
 
   useEffect(() => {
+    console.log("Ejecutando useEffect para cargar productos...");
     axios
-      .get("/api/productos")
+      .get("http://localhost:3001/productos")
       .then((response) => {
+        console.log("Datos recibidos desde la API:", response.data);
         setProductos(response.data);
       })
       .catch((error) => {
