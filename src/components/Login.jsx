@@ -1,71 +1,88 @@
-import React from "react";
+// src/pages/Login.js
+import React, { useState } from "react";
+import { supabase } from "../services/supabaseClient";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+const Login = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setMessage(error.message);
+    } else {
+      setMessage("¡Bienvenido!");
+      setTimeout(() => navigate("/dashboard"), 1500); // Redirecciona tras 1.5 segundos
+    }
+
+    setLoading(false);
+  };
+
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="relative w-full h-full">
-        <div className="absolute inset-0">
-          <img
-            src="path_to_your_background_image.jpg"
-            alt="Background"
-            className="w-full h-full object-cover"
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white shadow-md p-8 rounded-lg w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Iniciar Sesión</h2>
+        <form onSubmit={handleLogin} className="space-y-4">
+          <input
+            type="email"
+            placeholder="Correo electrónico"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            required
           />
-          <div className="absolute top-4 left-4 text-white text-xl font-bold">
-            CHAN
-          </div>
-          <div className="absolute top-12 left-4 text-white text-lg">
-            Tiendas automáticas
-          </div>
-        </div>
-        <div className="relative bg-white p-8 rounded-lg shadow-md w-96">
-          <div className="text-center mb-6">
-            <div className="text-2xl font-bold mb-2">CHAN</div>
-            <div className="text-lg">TIENDAS AUTOMÁTICAS</div>
-            <h2 className="text-xl font-semibold mt-4">Bienvenidos</h2>
-          </div>
-          <form>
-            <div className="mb-4">
-              <label htmlFor="username" className="block text-gray-700">
-                Usuario
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-gray-700">
-                Contraseña
-              </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            <div className="mb-4 flex items-center">
-              <input
-                type="checkbox"
-                id="remember"
-                name="remember"
-                className="mr-2"
-              />
-              <label htmlFor="remember" className="text-gray-700">
-                Recordar contraseña
-              </label>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-orange-500 text-white py-2 rounded-lg hover:bg-orange-600"
-            >
-              Iniciar Sesión
-            </button>
-          </form>
-        </div>
+          <input
+            type="password"
+            placeholder="Contraseña"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded"
+            required
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
+            disabled={loading}
+          >
+            {loading ? "Cargando..." : "Entrar"}
+          </button>
+        </form>
+
+        {message && (
+          <p
+            className={`mt-4 text-center text-sm ${
+              message.includes("Bienvenido") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
+        <p className="mt-6 text-center text-sm text-gray-600">
+          ¿No tienes cuenta?{" "}
+          <button
+            onClick={() => navigate("/registro")}
+            className="text-blue-500 hover:underline"
+          >
+            Regístrate aquí
+          </button>
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
