@@ -1,24 +1,25 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Navbar from "./components/navbar";
-import Login from "./components/Login";
-import Inventario from "./components/Inventario";
-import ProductList from "./pages/ProductList";
-import Register from "./components/Register";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ProductsPage from "./pages/ProductsPage";
+import MachinesPage from "./pages/MachinesPage";
+import UsersPage from "./pages/UsersPage";
+import ReportsPage from "./pages/ReportsPage";
 
 function App() {
   return (
-    <Router>
-      <Navbar />
+    <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/registro" element={<Register />} />
-        <Route path="/inventario" element={<Inventario />} />
-        <Route path="/producto" element={<ProductList />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/machines" element={<MachinesPage />} />
+        <Route path="/users" element={<UsersPage />} />
+        <Route path="/reports" element={<ReportsPage />} />
+        <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
 
